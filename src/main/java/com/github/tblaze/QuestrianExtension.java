@@ -1,3 +1,5 @@
+package com.github.tblaze;
+
 import net.minestom.server.extensions.Extension;
 
 public class QuestrianExtension extends Extension {
