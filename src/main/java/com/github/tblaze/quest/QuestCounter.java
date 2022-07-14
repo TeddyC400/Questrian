@@ -5,10 +5,18 @@ public class QuestCounter extends Quest {
     private int maximum;
     private int counter;
 
-    public QuestCounter(Builder builder) {
+    protected QuestCounter(Builder builder) {
         super(builder);
         this.maximum = builder.maximum;
         this.counter = builder.counter;
+    }
+
+    public static Builder create() {
+        return new Builder();
+    }
+
+    public static Builder create(int id) {
+        return new Builder(id);
     }
 
     @Override
@@ -41,8 +49,12 @@ public class QuestCounter extends Quest {
         private int maximum;
         private int counter;
 
-        public Builder() {
+        protected Builder() {
+            super();
+        }
 
+        protected Builder(int id) {
+            super(id);
         }
 
         public Builder maximum(int maximum) {

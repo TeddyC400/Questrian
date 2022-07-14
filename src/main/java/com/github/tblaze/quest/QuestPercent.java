@@ -4,9 +4,17 @@ public class QuestPercent extends Quest {
 
     private float progress;
 
-    public QuestPercent(Builder builder) {
+    protected QuestPercent(Builder builder) {
         super(builder);
         this.progress = builder.progress;
+    }
+
+    public static Builder create() {
+        return new Builder();
+    }
+
+    public static Builder create(int id) {
+        return new Builder(id);
     }
 
     @Override
@@ -38,8 +46,12 @@ public class QuestPercent extends Quest {
 
         private float progress;
 
-        public Builder() {
+        protected Builder() {
+            super();
+        }
 
+        protected Builder(int id) {
+            super(id);
         }
 
         public Builder progress(float progress) {
