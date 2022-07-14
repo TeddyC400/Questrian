@@ -3,14 +3,13 @@ package com.github.tblaze.quest;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class Quest implements Requirement, Progression {
 
-    private static int idCounter;
+    private static Map<Integer, Quest> questMap;
 
     private int id;
     private Component title;
@@ -21,24 +20,33 @@ public abstract class Quest implements Requirement, Progression {
     private Consumer<Player> completeFunc;
 
     static {
-        idCounter = 0;
+        questMap = new HashMap<>();
     }
 
-    protected Quest() {
-        this.id = idCounter++;
-        this.description = new ArrayList<>();
-
-        this.initialRequirements = new ArrayList<>();
-        this.completionRequirements = new ArrayList<>();
+    private Quest(int id) {
+        questMap.put(id, this);
     }
 
     protected Quest(Builder builder) {
-        this();
+        this(builder.id);
+        this.id = builder.id;
         this.title = builder.title;
         this.description = builder.description;
         this.initialRequirements = builder.initialConditions;
         this.completionRequirements = builder.completionConditions;
         this.completeFunc = builder.completeFunc;
+    }
+
+    public Quest get(int id) {
+        return questMap.get(id);
+    }
+
+    public void remove(int id) {
+        questMap.remove(id);
+    }
+
+    public void remove(Quest quest) {
+        questMap.remove(quest.id);
     }
 
     @Override
@@ -101,16 +109,27 @@ public abstract class Quest implements Requirement, Progression {
 
     public static class Builder<T extends Builder<T>> {
 
+        private int id;
         private Component title;
         private List<Component> description;
         private List<Supplier<Boolean>> initialConditions;
         private List<Supplier<Boolean>> completionConditions;
         private Consumer<Player> completeFunc;
 
-        public Builder() {
+        protected Builder() {
+            this(new Random().nextInt(5000 - 1000 + 1) + 1000);
+        }
+
+        protected Builder(int id) {
+            this.id = id;
             this.description = new ArrayList<>();
             this.initialConditions = new ArrayList<>();
             this.completionConditions = new ArrayList<>();
+        }
+
+        public T id(int id) {
+            this.id = id;
+            return (T) this;
         }
 
         public T title(Component title) {
